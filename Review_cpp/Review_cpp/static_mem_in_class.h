@@ -9,6 +9,8 @@
 #ifndef static_mem_in_class_h
 #define static_mem_in_class_h
 #include <iostream>
+
+#define random(x) (rand()%x)
 class Data
 {
 public:
@@ -44,7 +46,36 @@ public:
         
         d = 10;
         c = d--;
+        std::cout << d << std::endl;
         std::cout << c << std::endl;
+        
+        (d == 10) ? std::cout << "fuck u" : std::cout << "shit" << std::endl;
+    }
+    
+    //this is a function that call by value
+    static void swap_value(int a, int b){
+        int temp;
+        temp = a;
+        a = b;
+        b = temp;
+        return;
+    }
+    
+    //this is a function that call by reference
+    static void swap_reference(int& a, int& b)
+    {
+        int temp;
+        temp = a;
+        a = b;
+        b = temp;
+    }
+    
+    //this is a function that call by pointer
+    static void swap_pointer(int *a, int *b){
+        int temp;
+        temp = *a;
+        *a = *b;
+        *b = temp;
     }
     
 private:
@@ -52,6 +83,8 @@ private:
     //the const member must be initialized in constructor
     const int pdata = 100;
     //thread_local static int thread_lock;
+
+    
     
 public:
     static int number;
