@@ -35,6 +35,7 @@ int main(){
     }
     std::cout << time << std::endl;*/
     
+    /*
     double fuck_me_jerry[100] = {0};
     double *p = fuck_me_jerry;
     std::cout << p << std::endl;
@@ -43,6 +44,16 @@ int main(){
         *(p + i) = random(100);
         std::cout << *(p + i) << std::endl;
     }
+    */
+    
+    int a[5] = {1, 2, 3, 4, 5};
+    int *p = (int *)(&a + 1);
+    int *p1 = (int *)(a + 1);
+    std::cout << a << " " << *a << " " << &a << std::endl;
+    std::cout << *(a + 1) << " " << *p << " " << *(p - 1) << " " << *(p1 - 1) << std::endl;
+    
+    int k;
+    std::cout << k << std::endl;
     
     
     
