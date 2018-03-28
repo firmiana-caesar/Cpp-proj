@@ -1,0 +1,162 @@
+// testDlg.cpp : 实现文件
+//
+#include "stdafx.h"
+#include "test.h"
+#include "testDlg.h"
+#include "afxdialogex.h"
+#include <highgui.h>
+#include <opencv2\core\core.hpp>
+#include <opencv2\highgui\highgui.hpp>
+#include <opencv2\opencv.hpp>
+using namespace std;
+using namespace cv;
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
+
+// CtestDlg 对话框
+
+CtestDlg::CtestDlg(CWnd* pParent /*=NULL*/)
+	: CDialogEx(IDD_TEST_DIALOG, pParent)
+{
+	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+}
+
+void CtestDlg::DoDataExchange(CDataExchange* pDX)
+{
+	CDialogEx::DoDataExchange(pDX);
+}
+
+BEGIN_MESSAGE_MAP(CtestDlg, CDialogEx)
+	ON_WM_PAINT()
+	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_Open, &CtestDlg::OnBnClickedOpen)
+END_MESSAGE_MAP()
+
+
+// CtestDlg 消息处理程序
+
+BOOL CtestDlg::OnInitDialog()
+{
+	CDialogEx::OnInitDialog();
+
+	// 设置此对话框的图标。  当应用程序主窗口不是对话框时，框架将自动
+	//  执行此操作
+	SetIcon(m_hIcon, TRUE);			// 设置大图标
+	SetIcon(m_hIcon, FALSE);		// 设置小图标
+
+	// TODO: 在此添加额外的初始化代码
+
+	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
+}
+
+// 如果向对话框添加最小化按钮，则需要下面的代码
+//  来绘制该图标。  对于使用文档/视图模型的 MFC 应用程序，
+//  这将由框架自动完成。
+
+void CtestDlg::OnPaint()
+{
+	if (IsIconic())
+	{
+		CPaintDC dc(this); // 用于绘制的设备上下文
+
+		SendMessage(WM_ICONERASEBKGND, reinterpret_cast<WPARAM>(dc.GetSafeHdc()), 0);
+
+		// 使图标在工作区矩形中居中
+		int cxIcon = GetSystemMetrics(SM_CXICON);
+		int cyIcon = GetSystemMetrics(SM_CYICON);
+		CRect rect;
+		GetClientRect(&rect);
+		int x = (rect.Width() - cxIcon + 1) / 2;
+		int y = (rect.Height() - cyIcon + 1) / 2;
+
+		// 绘制图标
+		dc.DrawIcon(x, y, m_hIcon);
+	}
+	else
+	{
+		CDialogEx::OnPaint();
+	}
+}
+
+//当用户拖动最小化窗口时系统调用此函数取得光标
+//显示。
+HCURSOR CtestDlg::OnQueryDragIcon()
+{
+	return static_cast<HCURSOR>(m_hIcon);
+}
+
+void CtestDlg::OnBnClickedOpen()
+{
+	// TODO: 在此添加控件通知处理程序代码
+
+	//打开一张图片
+	CFileDialog dlg(TRUE, _T("*.bmp"), NULL, OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY, _T("image files (*.bmp; *.jpg)|*.bmp;*.jpg|All Files(*.*)| *.* || "), NULL);
+	dlg.m_ofn.lpstrTitle = _T("Open Image");
+	if (dlg.DoModal() != IDOK)		//没有选择路径则直接退出
+		return;
+
+	//获取图片的路径
+	CString m_path = dlg.GetPathName();
+	//显示未经修改的图片
+	showpicture(m_path);
+	//转换图片路径字符串的格式
+	std::string strStl;
+	strStl = CT2A(m_path);
+
+	//以下六行定义用于检测的颜色的HSV值
+	int iLowH = 0;
+	int iHighH = 10;
+	int iLowS = 43;
+	int iHighS = 255;
+	int iLowV = 46;
+	int iHighV = 255;												
+	
+	//定义图片存储
+	Mat imgOriginal = imread(strStl);
+	Mat imgHSV;
+
+	//用向量存储经过HSV处理的图片
+	vector<Mat> hsvSplit;
+	cvtColor(imgOriginal, imgHSV, COLOR_BGR2HSV);
+
+	//通道分离并处理
+	split(imgHSV, hsvSplit);
+	equalizeHist(hsvSplit[2], hsvSplit[2]);
+	merge(hsvSplit, imgHSV);
+	Mat imgThresholded;
+
+	//颜色分离
+	inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded);
+
+	//开操作 (去除一些噪点)
+	Mat element = getStructuringElement(MORPH_RECT, Size(5, 5));
+	morphologyEx(imgThresholded, imgThresholded, MORPH_OPEN, element);
+	
+	//闭操作 (连接一些连通域)
+	morphologyEx(imgThresholded, imgThresholded, MORPH_CLOSE, element);
+
+	//进行膨胀操作;i的值根据光照条件进行改变
+	for (int i = 0; i < 3; i++)
+	{
+		dilate(imgThresholded, imgThresholded, element);
+	}
+
+
+	//显示相应的图片
+	imshow("Thresholded Image", imgThresholded); 
+}
+
+//用于显示未经修改的图片
+void CtestDlg::showpicture(CString m_picpath)
+{
+	//转换路径的格式
+	std::string strStl;
+	strStl = CT2A(m_picpath);
+	//读取选定的图片
+	Mat picture = imread(strStl);
+	//新建窗口并显示图片
+	namedWindow("显示的图片");
+	imshow("显示的图片", picture);
+}

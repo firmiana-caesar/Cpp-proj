@@ -18,6 +18,7 @@ int main()
     bool objectDetection(Mat src, int threshold_value, int areasize, int channel);
     Mat Threshold(Mat src, int iLowH, int iHighH, int iLowS, int iHighS, int iLowV, int iHighV);
     
+    //HSV阈值
     int iLowH = 0;
     int iHighH = 10;
     int iLowS = 43;
@@ -25,7 +26,7 @@ int main()
     int iLowV = 46;
     int iHighV = 255;
     
-    String path = "timg.jpeg";
+    string path = "timg.jpeg";
     
     Mat imgSrc = imread(path);
     Mat imgThresholded = Threshold(imgSrc, iLowH, iHighH, iLowS, iHighS, iLowV, iHighV);
@@ -37,6 +38,7 @@ int main()
     waitKey(0);
 }
 
+//HSV阈值分割
 Mat Threshold(Mat src, int iLowH, int iHighH, int iLowS, int iHighS, int iLowV, int iHighV)
 {
     Mat imgHsv;
@@ -44,19 +46,24 @@ Mat Threshold(Mat src, int iLowH, int iHighH, int iLowS, int iHighS, int iLowV, 
     
     vector<Mat> hsvSplit;
     
-    //cvtColor(src, imgHsv, COLOR_BGR2HSV);
+    cvtColor(src, imgHsv, COLOR_BGR2HSV);
     
+    //通道分离处理
     split(imgHsv, hsvSplit);
-    equalizeHist(hsvSplit[1], hsvSplit[2]);
+    equalizeHist(hsvSplit[2], hsvSplit[2]);
     merge(hsvSplit, imgHsv);
     
+    //HSV分离
     inRange(imgHsv, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded);
     
+    //开操作去除噪点
     Mat element = getStructuringElement(MORPH_RECT, Size(5, 5));
     morphologyEx(imgThresholded, imgThresholded, MORPH_OPEN, element);
     
+    //闭操作连接连通域
     morphologyEx(imgThresholded, imgThresholded, MORPH_CLOSE, element);
     
+    //图像膨胀
     for (int i = 0; i < 3; i++)
     {
         dilate(imgThresholded, imgThresholded, element);
@@ -65,6 +72,7 @@ Mat Threshold(Mat src, int iLowH, int iHighH, int iLowS, int iHighS, int iLowV, 
     return imgThresholded;
 }
 
+//通道选择
 Mat selectChannel(Mat src, int channel)
 {
     Mat image, gray, hsv;
@@ -75,63 +83,27 @@ Mat selectChannel(Mat src, int channel)
     cvtColor(image, hsv, CV_BGR2HSV);
     vector<Mat> imageRGBORHSV;
     Mat imageSC;
-    switch (channel)
-    {
-        case 1:
-            //cvSplit(image,imageSC,0,0,0);
-            split(image, imageRGBORHSV);
-            imageSC = imageRGBORHSV[0];
-            break;
-        case 2:
-            //cvSplit(image,0,imageSC,0,0);
-            split(image, imageRGBORHSV);
-            imageSC = imageRGBORHSV[1];
-            break;
-        case 3:
-            //cvSplit(image,0,0,imageSC,0);
-            split(image, imageRGBORHSV);
-            imageSC = imageRGBORHSV[2];
-            break;
-        case 4:
-            //cvSplit(hsv,imageSC,0,0,0);
-            split(hsv, imageRGBORHSV);
-            imageSC = imageRGBORHSV[0];
-            break;
-        case 5:
-            //cvSplit(hsv,0,imageSC,0,0);
-            split(hsv, imageRGBORHSV);
-            imageSC = imageRGBORHSV[1];
-            break;
-        case 6:
-            //cvSplit(hsv,0,0,imageSC,0);
-            split(hsv, imageRGBORHSV);
-            imageSC = imageRGBORHSV[2];
-            break;
-        default:
-            //cvCopy( gray, imageSC, 0 );
-            imageSC = gray;
-    }
+    //cvSplit(image,imageSC,0,0,0);
+    split(image, imageRGBORHSV);
+    imageSC = imageRGBORHSV[0];
     
     return imageSC;
 }
 
+//根据阈值分割图像找出物体
 bool objectDetection(Mat src, int threshold_value, int areasize, int channel)
 {
     int i;
-    //cvCopy(src,displayImage,NULL);
     Mat displayImage = src.clone();
     
     Mat imageSC = selectChannel(src, channel);
-    //smooth(imageSC,imageSC,CV_MEDIAN);//图像中值滤波
+    //图像中值滤波
     medianBlur(imageSC, imageSC, g_nMedianBlurValue * 2 + 1);//中值滤波
-    //cvAdaptiveThreshold( gray, gray, 255, CV_ADAPTIVE_THRESH_MEAN_C,CV_THRESH_BINARY, 7, 0);
     threshold(imageSC, imageSC, threshold_value, 255, CV_THRESH_BINARY);
-    if (1)
-        threshold(imageSC, imageSC, threshold_value, 255, CV_THRESH_BINARY_INV);              //cvNot(imageSC,imageSC);//把元素的每一位取反
-    //imageSC->origin = 0;
+    threshold(imageSC, imageSC, threshold_value, 255, CV_THRESH_BINARY_INV);          //把元素的每一位取反
     
-    dilate(imageSC, imageSC, element);//膨胀
-    //CvScalar color = CV_RGB( 155, 155,155 );//灰度图像
+    
+    dilate(imageSC, imageSC, element);
     Scalar color = Scalar(155, 155, 155);
     vector<vector<Point>> Contours;
     vector<Vec4i> Hierarchy;
@@ -150,25 +122,24 @@ bool objectDetection(Mat src, int threshold_value, int areasize, int channel)
     for (int i = 0; i< Contours.size(); i++) {
         double tmparea = fabs(contourArea(Contours[i]));
         if (tmparea>areasize) {
-            drawContours(displayImage, Contours, i, color, 2, 8, Hierarchy, 0, Point());//you can change 1 to CV_FILLED
-            if (1) {
-                rectangle(drawing, boundingRect(Contours.at(i)), cvScalar(0, 255, 0));
+            drawContours(displayImage, Contours, i, color, 2, 8, Hierarchy, 0, Point());
+            
+            rectangle(drawing, boundingRect(Contours.at(i)), cvScalar(0, 255, 0));
                 
-                char tam[10000];
-                sprintf(tam, "(%0.0f,%0.0f,%0.0d,%0.0d)", mc[i].x, mc[i].y, boundingRect(Contours.at(i)).height, boundingRect(Contours.at(i)).width);
-                //tam[0]=mc[i].x;
-                
-                cout << "质心x " << mc[i].x << " 质心y  " << mc[i].y << " height=" << boundingRect(Contours.at(i)).height << " width=" << boundingRect(Contours.at(i)).width << endl;
-                circle(drawing, mc[i], 5, cvScalar(255, 0, 0));
-                putText(drawing, tam, Point(mc[i].x, mc[i].y), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(255, 0, 255), 1);
-            }
+            char tam[10000];
+            sprintf(tam, "(%0.0f,%0.0f,%0.0d,%0.0d)", mc[i].x, mc[i].y, boundingRect(Contours.at(i)).height, boundingRect(Contours.at(i)).width);
+            //tam[0]=mc[i].x;
+            
+            cout << "x " << mc[i].x << "y  " << mc[i].y << " height " << boundingRect(Contours.at(i)).height << " width " << boundingRect(Contours.at(i)).width << endl;
+            circle(drawing, mc[i], 5, cvScalar(255, 0, 0));
+            putText(drawing, tam, Point(mc[i].x, mc[i].y), FONT_HERSHEY_SIMPLEX, 0.4, Scalar(255, 0, 255), 1);
+            
         }
     }
     
-    imshow("bianyuan", drawing);
+    imshow("pic", drawing);
     imshow("imageSC", imageSC);
     imshow("src", src);
     waitKey(0);
     return false;
 }
-

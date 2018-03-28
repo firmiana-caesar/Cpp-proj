@@ -1,0 +1,54 @@
+void CtestDlg::OnBnClickedOpen()
+{
+	
+	CFileDialog dlg(TRUE, _T("*.bmp"), NULL, OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY, _T("image files (*.bmp; *.jpg)|*.bmp;*.jpg|All Files(*.*)| *.* || "), NULL);
+	dlg.m_ofn.lpstrTitle = _T("Open Image");
+	if (dlg.DoModal() != IDOK)		
+		return;
+
+	CString m_path = dlg.GetPathName();
+	showpicture(m_path);
+	std::string strStl;
+	strStl = CT2A(m_path);
+	int iLowH = 0;
+	int iHighH = 10;
+	int iLowS = 43;
+	int iHighS = 255;
+	int iLowV = 46;
+	int iHighV = 255;
+
+
+	//Mat imgOriginal = imread(strStl);
+	//Mat imgHSV;
+	//vector<Mat> hsvSplit;
+	cvtColor(imgOriginal, imgHSV, COLOR_BGR2HSV);
+	split(imgHSV, hsvSplit);
+	equalizeHist(hsvSplit[2], hsvSplit[2]);
+	merge(hsvSplit, imgHSV);
+	Mat imgThresholded;
+	inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), imgThresholded);
+	Mat element = getStructuringElement(MORPH_RECT, Size(5, 5));
+	morphologyEx(imgThresholded, imgThresholded, MORPH_OPEN, element);
+	morphologyEx(imgThresholded, imgThresholded, MORPH_CLOSE, element);
+	imshow("Thresholded Image", imgThresholded); 
+}
+
+
+void CtestDlg::showpicture(CString m_picpath)
+{
+	std::string strStl;
+	strStl = CT2A(m_picpath);
+	Mat picture = imread(strStl);
+	namedWindow("显示的图片");
+	imshow("显示的图片", picture);
+}
+
+
+
+
+
+
+
+
+
+
