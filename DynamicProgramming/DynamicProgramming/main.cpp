@@ -18,6 +18,7 @@
  
   在上面的数字三角形中寻找一条从顶部到底边的路径，使得路径上所经过的数字之和最大。路径上的每一步都只能往左下或 右下走。只需要求出这个最大和即可，不必给出具体路径。 三角形的行数大于1小于等于100，数字为 0 - 99
  */
+/*
 #include <iostream>
 #include <algorithm>
 using namespace std;
@@ -72,3 +73,4 @@ int main(int argc, const char * argv[]) {
     
     return 0;
 }
+*/
