@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		85200F8E206C8C35003D65F1 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 85200F8D206C8C35003D65F1 /* main.cpp */; };
 		85DD4EC720789AB60025AA3C /* DynamicProgramming.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 85DD4EC620789AB60025AA3C /* DynamicProgramming.cpp */; };
+		85DD4ED02078AB3A0025AA3C /* LCS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 85DD4ECF2078AB3A0025AA3C /* LCS.cpp */; };
+		85DD4ED32078B1490025AA3C /* fullypackage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 85DD4ED22078B1490025AA3C /* fullypackage.cpp */; };
+		85DD4ED62078BB790025AA3C /* 多重部分和.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 85DD4ED52078BB790025AA3C /* 多重部分和.cpp */; };
+		85DD4EDA2078BF180025AA3C /* longestIncreaseSubsequence.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 85DD4ED82078BF180025AA3C /* longestIncreaseSubsequence.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -27,6 +31,10 @@
 		85200F8A206C8C35003D65F1 /* DynamicProgramming */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = DynamicProgramming; sourceTree = BUILT_PRODUCTS_DIR; };
 		85200F8D206C8C35003D65F1 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		85DD4EC620789AB60025AA3C /* DynamicProgramming.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = DynamicProgramming.cpp; sourceTree = "<group>"; };
+		85DD4ECF2078AB3A0025AA3C /* LCS.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LCS.cpp; sourceTree = "<group>"; };
+		85DD4ED22078B1490025AA3C /* fullypackage.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = fullypackage.cpp; sourceTree = "<group>"; };
+		85DD4ED52078BB790025AA3C /* 多重部分和.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "多重部分和.cpp"; sourceTree = "<group>"; };
+		85DD4ED82078BF180025AA3C /* longestIncreaseSubsequence.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = longestIncreaseSubsequence.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,7 +51,11 @@
 		85200F81206C8C35003D65F1 = {
 			isa = PBXGroup;
 			children = (
-				85DD4EC520789A970025AA3C /* New Group */,
+				85DD4ED72078BEE80025AA3C /* Longest Increase Subsequence */,
+				85DD4ED42078BB570025AA3C /* 多重部分和 */,
+				85DD4ED12078B1280025AA3C /* full package */,
+				85DD4ECB2078AAE00025AA3C /* Longest_Common_Subsequence */,
+				85DD4ECA2078AAB20025AA3C /* beibao */,
 				85200F8C206C8C35003D65F1 /* DynamicProgramming */,
 				85200F8B206C8C35003D65F1 /* Products */,
 			);
@@ -65,12 +77,44 @@
 			path = DynamicProgramming;
 			sourceTree = "<group>";
 		};
-		85DD4EC520789A970025AA3C /* New Group */ = {
+		85DD4ECA2078AAB20025AA3C /* beibao */ = {
 			isa = PBXGroup;
 			children = (
 				85DD4EC620789AB60025AA3C /* DynamicProgramming.cpp */,
 			);
-			path = "New Group";
+			name = beibao;
+			sourceTree = "<group>";
+		};
+		85DD4ECB2078AAE00025AA3C /* Longest_Common_Subsequence */ = {
+			isa = PBXGroup;
+			children = (
+				85DD4ECF2078AB3A0025AA3C /* LCS.cpp */,
+			);
+			name = Longest_Common_Subsequence;
+			sourceTree = "<group>";
+		};
+		85DD4ED12078B1280025AA3C /* full package */ = {
+			isa = PBXGroup;
+			children = (
+				85DD4ED22078B1490025AA3C /* fullypackage.cpp */,
+			);
+			name = "full package";
+			sourceTree = "<group>";
+		};
+		85DD4ED42078BB570025AA3C /* 多重部分和 */ = {
+			isa = PBXGroup;
+			children = (
+				85DD4ED52078BB790025AA3C /* 多重部分和.cpp */,
+			);
+			name = "多重部分和";
+			sourceTree = "<group>";
+		};
+		85DD4ED72078BEE80025AA3C /* Longest Increase Subsequence */ = {
+			isa = PBXGroup;
+			children = (
+				85DD4ED82078BF180025AA3C /* longestIncreaseSubsequence.cpp */,
+			);
+			name = "Longest Increase Subsequence";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -130,6 +174,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				85DD4ED62078BB790025AA3C /* 多重部分和.cpp in Sources */,
+				85DD4ED02078AB3A0025AA3C /* LCS.cpp in Sources */,
+				85DD4EDA2078BF180025AA3C /* longestIncreaseSubsequence.cpp in Sources */,
+				85DD4ED32078B1490025AA3C /* fullypackage.cpp in Sources */,
 				85200F8E206C8C35003D65F1 /* main.cpp in Sources */,
 				85DD4EC720789AB60025AA3C /* DynamicProgramming.cpp in Sources */,
 			);
