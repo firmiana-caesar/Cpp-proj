@@ -1,0 +1,3 @@
+/Users/firmiana/test_opencv/CMakeFiles/rebuild_cache.dir
+/Users/firmiana/test_opencv/CMakeFiles/edit_cache.dir
+/Users/firmiana/test_opencv/CMakeFiles/DisplayImage.dir
